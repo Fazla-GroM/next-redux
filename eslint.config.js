@@ -1,10 +1,12 @@
 import eslint from "@eslint/js";
 import { flatConfig as nextFlatConfig } from "@next/eslint-plugin-next";
+import pluginVitest from "@vitest/eslint-plugin";
 import configPrettier from "eslint-config-prettier";
 import pluginJsxA11y from "eslint-plugin-jsx-a11y";
 import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import pluginSimpleImportSort from "eslint-plugin-simple-import-sort";
+import pluginTestingLibrary from "eslint-plugin-testing-library";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -121,9 +123,19 @@ const nextConfig = tseslint.config({
     },
 });
 
+const vitestConfig = tseslint.config({
+    name: "Vitest",
+    files: ["**/*.test.{ts,tsx}"],
+    extends: [
+        pluginVitest.configs.recommended,
+        pluginTestingLibrary.configs["flat/dom"],
+        pluginTestingLibrary.configs["flat/react"],
+    ],
+});
+
 const prettierConfig = tseslint.config({
     ...configPrettier,
     name: "Prettier",
 });
 
-export default tseslint.config(baseConfig, reactConfig, nextConfig, prettierConfig);
+export default tseslint.config(baseConfig, reactConfig, nextConfig, vitestConfig, prettierConfig);
