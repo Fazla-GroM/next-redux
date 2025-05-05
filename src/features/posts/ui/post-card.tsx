@@ -1,11 +1,11 @@
 import { Avatar, Button, Card, HStack, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
-type FeedCardProperties = Readonly<{
+type PostCardProperties = Readonly<{
     isHighlighted?: boolean | undefined;
 }>;
 
-export function FeedCard({ isHighlighted }: FeedCardProperties) {
+export function PostCard({ isHighlighted }: PostCardProperties) {
     return (
         <Card.Root colorPalette={"purple"} variant={isHighlighted ? "subtle" : "outline"}>
             <Card.Body gap="3">
