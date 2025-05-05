@@ -1,28 +1,28 @@
 import { Box, Stack } from "@chakra-ui/react";
 
-import { FeedCard } from "~features/feed/ui/feed-card";
+import { PostCard } from "../features/posts/ui/post-card";
 
 export default function Page() {
     return (
         <Box as="main" paddingX="4" paddingY="6">
             <Stack as="ul" gap="4">
                 <li>
-                    <FeedCard isHighlighted />
+                    <PostCard isHighlighted />
                 </li>
                 <li>
-                    <FeedCard />
+                    <PostCard />
                 </li>
                 <li>
-                    <FeedCard />
+                    <PostCard />
                 </li>
                 <li>
-                    <FeedCard />
+                    <PostCard />
                 </li>
                 <li>
-                    <FeedCard />
+                    <PostCard />
                 </li>
                 <li>
-                    <FeedCard />
+                    <PostCard />
                 </li>
             </Stack>
         </Box>
