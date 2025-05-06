@@ -1,8 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import { postsApiMiddleware } from "../features/posts/redux/posts-api-slice";
+import { usersApiMiddleware } from "../features/users/redux/users-api-slice";
+import { rootReducer } from "./root-reducer";
+
 export const makeStore = () => {
     return configureStore({
-        reducer: {},
+        reducer: rootReducer,
+        middleware: (getDefaultMiddleware) => {
+            return getDefaultMiddleware().prepend(postsApiMiddleware, usersApiMiddleware);
+        },
     });
 };
 
