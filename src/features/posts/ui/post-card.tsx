@@ -1,6 +1,7 @@
 'use client";';
 
-import { Button, Card } from "@chakra-ui/react";
+import { Card, HStack, IconButton, LinkOverlay, Text } from "@chakra-ui/react";
+import { MessageSquareIcon, ShareIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
 
 import { useGetUserDetailsQuery } from "../../users/redux/users-api-slice";
@@ -12,38 +13,59 @@ type PostCardProperties = Readonly<{
     title: string;
     body: string;
     id: number;
+    votes: number;
 }>;
 
-export function PostCard({ isHighlighted, userId, id, title, body }: PostCardProperties) {
-    const { data } = useGetUserDetailsQuery({
+export function PostCard({ isHighlighted, userId, id, title, body, votes }: PostCardProperties) {
+    const { data, isLoading } = useGetUserDetailsQuery({
         path: {
             id: userId,
         },
     });
 
     return (
-        <Card.Root colorPalette={"purple"} variant={isHighlighted ? "subtle" : "outline"}>
-            <Card.Header>
+        <Card.Root
+            size={["sm", "md"]}
+            as="article"
+            colorPalette={"purple"}
+            variant={isHighlighted ? "subtle" : "outline"}
+        >
+            <Card.Header as="header">
                 <UserPersona
+                    isLoading={isLoading}
                     name={`${data?.firstName} ${data?.lastName}`}
                     email={data?.email}
                     image={data?.image}
                 />
             </Card.Header>
             <Card.Body gap="3">
-                <Card.Title>{title}</Card.Title>
-
+                <Card.Title>
+                    <LinkOverlay asChild>
+                        <Link href={`/posts/${id.toString()}`}>{title}</Link>
+                    </LinkOverlay>
+                </Card.Title>
                 <Card.Description>{body}</Card.Description>
             </Card.Body>
-            <Card.Footer justifyContent="flex-end">
-                <Button
-                    asChild
-                    rounded="full"
-                    size="md"
-                    variant={isHighlighted ? "solid" : "outline"}
-                >
-                    <Link href={`/posts/${id.toString()}`}>View post</Link>
-                </Button>
+            <Card.Footer as="footer" justifyContent="space-between">
+                <HStack>
+                    <HStack zIndex="base" backgroundColor="bg.muted" borderRadius="full">
+                        <IconButton size="md" rounded="full" variant="subtle" colorPalette="gray">
+                            <ThumbsUpIcon />
+                        </IconButton>
+                        <Text textStyle="sm" fontWeight="semibold">
+                            {votes}
+                        </Text>
+                        <IconButton size="md" rounded="full" variant="subtle" colorPalette="gray">
+                            <ThumbsDownIcon />
+                        </IconButton>
+                    </HStack>
+                    <IconButton size="md" rounded="full" variant="subtle" colorPalette="gray">
+                        <MessageSquareIcon />
+                    </IconButton>
+                </HStack>
+                <IconButton size="md" rounded="full" variant="subtle" colorPalette="gray">
+                    <ShareIcon />
+                </IconButton>
             </Card.Footer>
         </Card.Root>
     );
