@@ -1,5 +1,6 @@
 "use client";
 
+import ReduxStoreProvider from "../redux/redux-store-provider";
 import { ThemeProvider } from "../ui/theme/theme-provider";
 
 type ProvidersProperties = Readonly<{
@@ -7,5 +8,9 @@ type ProvidersProperties = Readonly<{
 }>;
 
 export function Providers({ children }: ProvidersProperties) {
-    return <ThemeProvider>{children}</ThemeProvider>;
+    return (
+        <ReduxStoreProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+        </ReduxStoreProvider>
+    );
 }
