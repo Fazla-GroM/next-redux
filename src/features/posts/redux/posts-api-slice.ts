@@ -30,32 +30,63 @@ const postListResponseSchema = v.object({
     limit: v.number(),
 });
 
-const getPostListArgumentsSchema = v.object({
-    search: v.object({
-        limit: v.optional(v.number(), 20),
-        skip: v.optional(v.number()),
+export type PostListResponse = v.InferOutput<typeof postListResponseSchema>;
+
+const getPostInfiniteListArgumentsSchema = v.object({
+    queryArg: v.void(),
+    pageParam: v.object({
+        limit: v.number(),
+        skip: v.number(),
     }),
 });
-
-// type Input = v.InferInput<typeof getPostListArgumentsSchema>;
-
-// type Output = v.InferOutput<typeof getPostListArgumentsSchema>;
 
 // Define a service using a base URL and expected endpoints
 export const postsApiSlice = createApi({
     reducerPath: "postsApi",
     baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/posts" }),
     endpoints: (builder) => ({
-        getPostList: builder.query({
-            // It looks like type inference is not working here. Probably because wrong implementation
-            // from library authors. If we uncomment type Output above limit will will not be of type number | undefined.
-            // Other libs which use standard schema work correctly.(e.g Tanstack Router)
-            // @ts-expect-error -- Type inference is not working correctly
-            query: ({ search }) => `?limit=${search.limit.toString()}`,
-
+        getPostDetails: builder.query({
+            query: ({ path }) => path.id.toString(),
+            responseSchema: postResponseSchema,
+            argSchema: getPostDetailsArgumentsSchema,
+        }),
+        getPostList: builder.infiniteQuery({
+            query: ({ pageParam }) => {
+                return `?limit=${pageParam.limit.toString()}&skip=${pageParam.skip.toString()}`;
+            },
             rawResponseSchema: postListResponseSchema,
             responseSchema: postListResponseSchema,
-            argSchema: getPostListArgumentsSchema,
+            argSchema: getPostInfiniteListArgumentsSchema,
+
+            infiniteQueryOptions: {
+                initialPageParam: {
+                    skip: 0,
+                    limit: 20,
+                },
+
+                getNextPageParam: (lastPage, _allPages, lastPageParameter) => {
+                    const nextOffset = lastPageParameter.skip + lastPageParameter.limit;
+                    const remainingItems = lastPage.total - nextOffset;
+
+                    if (remainingItems <= 0) {
+                        return;
+                    }
+
+                    return {
+                        ...lastPageParameter,
+                        skip: nextOffset,
+                    };
+                },
+                getPreviousPageParam: (_firstPage, _allPages, firstPageParameter) => {
+                    const previousOffset = firstPageParameter.skip - firstPageParameter.limit;
+                    if (previousOffset < 0) return;
+
+                    return {
+                        ...firstPageParameter,
+                        skip: previousOffset,
+                    };
+                },
+            },
             transformResponse: (response) => ({
                 ...response,
                 posts: response.posts.map((post) => ({
@@ -64,18 +95,13 @@ export const postsApiSlice = createApi({
                 })),
             }),
         }),
-        getPostDetails: builder.query({
-            query: ({ path }) => path.id.toString(),
-            responseSchema: postResponseSchema,
-            argSchema: getPostDetailsArgumentsSchema,
-        }),
     }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-    useGetPostListQuery,
     useGetPostDetailsQuery,
+    useGetPostListInfiniteQuery,
     middleware: postsApiMiddleware,
 } = postsApiSlice;
