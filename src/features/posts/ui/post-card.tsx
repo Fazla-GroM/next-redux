@@ -4,7 +4,6 @@ import { Card, HStack, IconButton, LinkOverlay, Text } from "@chakra-ui/react";
 import { MessageSquareIcon, ShareIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
 
-import { useGetUserDetailsQuery } from "../../users/redux/users-api-slice";
 import { UserPersona } from "../../users/ui/user-persona";
 
 type PostCardProperties = Readonly<{
@@ -17,12 +16,6 @@ type PostCardProperties = Readonly<{
 }>;
 
 export function PostCard({ isHighlighted, userId, id, title, body, votes }: PostCardProperties) {
-    const { data, isLoading } = useGetUserDetailsQuery({
-        path: {
-            id: userId,
-        },
-    });
-
     return (
         <Card.Root
             size={["sm", "md"]}
@@ -31,17 +24,14 @@ export function PostCard({ isHighlighted, userId, id, title, body, votes }: Post
             variant={isHighlighted ? "subtle" : "outline"}
         >
             <Card.Header as="header">
-                <UserPersona
-                    isLoading={isLoading}
-                    name={`${data?.firstName} ${data?.lastName}`}
-                    email={data?.email}
-                    image={data?.image}
-                />
+                <UserPersona userId={userId} />
             </Card.Header>
             <Card.Body gap="3">
                 <Card.Title>
                     <LinkOverlay asChild>
-                        <Link href={`/posts/${id.toString()}`}>{title}</Link>
+                        <Link scroll={false} href={`/posts/${id.toString()}`}>
+                            {title}
+                        </Link>
                     </LinkOverlay>
                 </Card.Title>
                 <Card.Description>{body}</Card.Description>

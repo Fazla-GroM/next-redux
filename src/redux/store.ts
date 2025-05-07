@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { postsApiMiddleware } from "../features/posts/redux/posts-api-slice";
-import { usersApiMiddleware } from "../features/users/redux/users-api-slice";
+import { postsApiMiddleware } from "../features/posts/api/posts-api-slice";
+import { usersApiMiddleware } from "../features/users/api/users-api-slice";
 import { rootReducer } from "./root-reducer";
 
 export const makeStore = () => {

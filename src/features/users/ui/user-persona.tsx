@@ -1,55 +1,36 @@
 import { Avatar, HStack, Stack, Text } from "@chakra-ui/react";
+import { skipToken } from "@reduxjs/toolkit/query";
 
+import { useGetUserDetailsQuery } from "../api/users-api-slice";
 import { UserPersonaSkeleton } from "./user-persona-skeleton";
 
 type UserPersonaProperties = Readonly<{
-    name: string;
-    email: string;
-    image: string;
-    isLoading?: boolean;
+    userId?: number | undefined;
 }>;
 
-export function UserPersona({ name, email, image, isLoading }: UserPersonaProperties) {
+export function UserPersona({ userId }: UserPersonaProperties) {
+    const { data, isLoading } = useGetUserDetailsQuery(userId ? { id: userId } : skipToken);
+
     if (isLoading) {
         return <UserPersonaSkeleton />;
     }
 
+    const fullUsername = [data?.firstName, data?.lastName].filter(Boolean).join(" ");
+
     return (
         <HStack gap="4">
             <Avatar.Root size="md">
-                <Avatar.Image src={image} alt={name} />
-                <Avatar.Fallback name={name} />
+                <Avatar.Image src={data?.image} alt={fullUsername} />
+                <Avatar.Fallback name={fullUsername} />
             </Avatar.Root>
             <Stack gap="0">
                 <Text textStyle="sm" fontWeight="medium" color="fg">
-                    {name}
+                    {fullUsername}
                 </Text>
                 <Text textStyle="sm" color="fg.muted">
-                    {email}
+                    {data?.email}
                 </Text>
             </Stack>
         </HStack>
     );
 }
-
-// export function UserPersona({ name, email, image }: UserPersonaProperties) {
-//     return (
-//         <HStack gap="4">
-//             <Avatar.Root size="md">
-//                 <Avatar.Image src={image} alt={name} />
-//                 <Avatar.Fallback name={name} />
-//             </Avatar.Root>
-//             <Stack gap="0">
-//                 <Text textStyle="md" fontWeight="medium" color="fg">
-//                     {name || "John Doe"}
-//                 </Text>
-//                 <Text textStyle="sm" color="fg.muted">
-//                     {email || "john.doe@email.com"}
-//                 </Text>
-//             </Stack>
-//             <Skeleton width="40px">
-//                 <Text>blbla</Text>
-//             </Skeleton>
-//         </HStack>
-//     );
-// }

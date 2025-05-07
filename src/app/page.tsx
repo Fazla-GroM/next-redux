@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
 
-import { PostList } from "../features/posts/ui/post-list";
+import { PostListView } from "../features/posts/ui/post-list-view";
 
 export default function Page() {
     return (
         <Box as="main" paddingX="4" paddingY="6">
-            <PostList />
+            <PostListView />
         </Box>
     );
 }

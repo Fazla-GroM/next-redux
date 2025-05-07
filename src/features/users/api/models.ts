@@ -1,4 +1,3 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as v from "valibot";
 
 const addressSchema = v.object({
@@ -14,7 +13,7 @@ const addressSchema = v.object({
     }),
 });
 
-const userSchema = v.object({
+export const userSchema = v.object({
     id: v.number(),
     firstName: v.string(),
     lastName: v.string(),
@@ -63,25 +62,6 @@ const userSchema = v.object({
     }),
 });
 
-const getUserDetailsArgumentsSchema = v.object({
-    path: v.object({
-        id: v.number(),
-    }),
+export const getUserDetailsArgumentsSchema = v.object({
+    id: v.number(),
 });
-
-// Define a service using a base URL and expected endpoints
-export const usersApiSlice = createApi({
-    reducerPath: "usersApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/users/" }),
-    endpoints: (builder) => ({
-        getUserDetails: builder.query({
-            query: ({ path }) => path.id.toString(),
-            responseSchema: userSchema,
-            argSchema: getUserDetailsArgumentsSchema,
-        }),
-    }),
-});
-
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetUserDetailsQuery, middleware: usersApiMiddleware } = usersApiSlice;

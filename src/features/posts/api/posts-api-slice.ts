@@ -1,44 +1,13 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import * as v from "valibot";
 
 import { truncateStringAtWhitespace } from "../../../utils/truncate-string";
-
-const postResponseSchema = v.object({
-    id: v.number(),
-    title: v.string(),
-    body: v.string(),
-    tags: v.array(v.string()),
-    reactions: v.object({
-        likes: v.number(),
-        dislikes: v.number(),
-    }),
-    views: v.number(),
-    userId: v.number(),
-});
-
-const getPostDetailsArgumentsSchema = v.object({
-    path: v.object({
-        id: v.number(),
-    }),
-});
-
-const postListResponseSchema = v.object({
-    posts: v.array(postResponseSchema),
-    total: v.number(),
-    skip: v.number(),
-    limit: v.number(),
-});
-
-export type PostListResponse = v.InferOutput<typeof postListResponseSchema>;
-
-const getPostInfiniteListArgumentsSchema = v.object({
-    queryArg: v.void(),
-    pageParam: v.object({
-        limit: v.number(),
-        skip: v.number(),
-    }),
-});
+import {
+    getPostDetailsArgumentsSchema,
+    getPostInfiniteListArgumentsSchema,
+    postListResponseSchema,
+    postResponseSchema,
+} from "./models";
 
 // Define a service using a base URL and expected endpoints
 export const postsApiSlice = createApi({
@@ -46,9 +15,14 @@ export const postsApiSlice = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/posts" }),
     endpoints: (builder) => ({
         getPostDetails: builder.query({
-            query: ({ path }) => path.id.toString(),
+            query: ({ id }) => id.toString(),
             responseSchema: postResponseSchema,
             argSchema: getPostDetailsArgumentsSchema,
+            catchSchemaFailure: (error) => ({
+                status: "CUSTOM_ERROR",
+                error: error.schemaName + " failed validation",
+                data: error.issues,
+            }),
         }),
         getPostList: builder.infiniteQuery({
             query: ({ pageParam }) => {
