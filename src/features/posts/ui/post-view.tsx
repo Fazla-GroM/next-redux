@@ -1,5 +1,4 @@
 "use client";
-
 import { Heading, HStack, IconButton, Stack, Text } from "@chakra-ui/react";
 import { ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";

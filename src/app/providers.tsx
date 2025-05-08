@@ -1,6 +1,6 @@
 "use client";
 
-import ReduxStoreProvider from "../redux/redux-store-provider";
+import { ReduxStoreProvider } from "../redux/redux-store-provider";
 import { ThemeProvider } from "../ui/theme/theme-provider";
 
 type ProvidersProperties = Readonly<{
