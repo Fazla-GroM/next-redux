@@ -30,6 +30,8 @@
         "@commitlint/config-conventional": "^19.8.0",
         "@commitlint/cz-commitlint": "^19.8.0",
         "@eslint/js": "^9.25.1",
+        "@faker-js/faker": "^9.7.0",
+        "@mswjs/data": "^0.16.2",
         "@next/eslint-plugin-next": "^15.3.1",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/react": "^16.3.0",
@@ -51,10 +53,16 @@
         "globals": "^16.0.0",
         "husky": "^9.1.7",
         "jsdom": "^26.1.0",
+        "msw": "^2.7.6",
         "prettier": "^3.5.3",
         "typescript": "^5",
         "typescript-eslint": "^8.31.1",
         "vite-tsconfig-paths": "^5.1.4",
         "vitest": "^3.1.2"
+    },
+    "msw": {
+        "workerDirectory": [
+            "public"
+        ]
     }
 }
